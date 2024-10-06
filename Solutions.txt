@@ -1,0 +1,38 @@
+Question 1 By default are Django signals executed synchronously or asynchronously? Please
+support your answer with a code snippet that conclusively proves your stance. The code does
+not need to be elegant and production ready, we just need to understand your logic.
+
+
+Ans:  By default, Django signals are executed synchronously. This means that the signal handler (receiver) will be executed immediately when the signal is sent and will block the flow of the program until the handler finishes executing.
+From the code you will see that 
+When a new user is created, the post_save signal is triggered.
+The signal handler my_signal_handler runs synchronously, meaning the code waits for 5 seconds before printing "Signal processing finished."
+The program won't continue past the signal handling until the signal finishes executing.
+
+
+
+
+Question 2 Do Django signals run in the same thread as the caller? Please support your
+answer with a code snippet that conclusively proves your stance. The code does not need to be
+elegant and production ready, we just need to understand your logic.
+
+Ans: By default, Django signals run in the same thread as the caller. This means that the signal handler is executed within the same thread that triggered the signal.
+From the code you will notice
+The post_save signal is triggered when a User is saved.
+The my_signal_handler function prints the name of the thread it is running in.
+Both the main code and the signal handler will output the same thread name, confirming that they run in the same thread.
+
+
+
+
+Question 3 By default do Django signals run in the same database transaction as the caller?
+Please support your answer with a code snippet that conclusively proves your stance. The code
+does not need to be elegant and production ready, we just need to understand your logic.
+
+Ans: Yes, Django signals run in the same database transaction by default. This means that if the signal is connected to a database event, it will be part of the same transaction. If an exception occurs in the signal handler, it can affect the transaction.
+You will see
+I have created a user inside a transaction.
+The signal handler checks the username and raises an exception if it's "rollbackuser."
+Since the signal is part of the same transaction, the exception causes the transaction to roll back, and the user is not saved to the database.
+
+
